@@ -1,5 +1,6 @@
 package com.example.android.minipaint
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.view.MotionEvent
@@ -12,6 +13,7 @@ private const val STROKE_WIDTH = 12f // has to be float
 class MyCanvasView(context: Context?) : View(context) {
     private lateinit var extraCanvas: Canvas
     private lateinit var extraBitmap: Bitmap
+
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
     private val drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
     // Set up the paint with which to draw.
@@ -39,6 +41,14 @@ class MyCanvasView(context: Context?) : View(context) {
 
     private lateinit var frame: Rect
 
+    /*
+    // Path representing the drawing so far
+    private var drawing = Path()
+
+    // Path representing what's currently being drawn
+    private var curPath = Path()
+    */
+
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
 
@@ -55,8 +65,17 @@ class MyCanvasView(context: Context?) : View(context) {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
-        // Draw a frame around the canvas.
+
+        /*
+        // Draw the drawing so far
+        canvas.drawPath(drawing, paint)
+        // Draw any current squiggle
+        canvas.drawPath(curPath, paint)
+        */
+
+        // Draw a frame around the canvas
         canvas.drawRect(frame, paint)
+
     }
 
     private fun touchStart() {
@@ -84,8 +103,16 @@ class MyCanvasView(context: Context?) : View(context) {
     private fun touchUp() {
         // Reset the path so it doesn't get drawn again.
         path.reset()
+
+        /*
+        // Add the current path to the drawing so far
+        drawing.addPath(curPath)
+        // Rewind the current path for the next touch
+        curPath.reset()
+        */
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         motionTouchEventX = event.x
         motionTouchEventY = event.y
